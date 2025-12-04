@@ -77,7 +77,7 @@ class Inventario(BaseModel):
     codigo: int = Field(...)
     nombre: str = Field(...)
     
-    Inventario: List[InventarioItem]
+    inventario: List[InventarioItem]
 
     model_config = ConfigDict(
         populate_by_name=True,

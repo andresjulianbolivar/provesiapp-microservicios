@@ -13,4 +13,4 @@ ENDPOINT_NAME = "/inventarios"
     status_code=status.HTTP_200_OK,
 )
 async def get_place(producto_code: int):
-    return await inventarios_service.get_place(producto_code)
+    return await inventarios_service.get_inventario(producto_code)
