@@ -104,3 +104,19 @@ def crear_factura(request):
         return HttpResponse(
             f"Ocurrió un error al crear la factura: {str(e)}", status=400
         )
+        
+def pedidos_verificados(request):
+    """
+    Devuelve los pedidos en estado 'Verificado' como JSON.
+    Será consumido por el monolito para mostrar el formulario de crear factura.
+    """
+    pedidos = Pedido.objects.filter(estado="Verificado").order_by("id")
+    data = list(
+        pedidos.values(
+            "id",
+            "fecha",
+            "vip",
+            "estado",
+        )
+    )
+    return JsonResponse(data, safe=False)
