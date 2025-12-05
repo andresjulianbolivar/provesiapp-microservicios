@@ -68,7 +68,7 @@ def crear_pedido(request):
 
 
 def facturas_pendientes(request):
-    # OJO: tu modelo Factura tiene rubro_total, no 'total' ni 'fecha'
+    # OJO: tu modelo Factura tiene rubro_total
     facturas = Factura.objects.all()
 
     context = list(
@@ -120,3 +120,43 @@ def pedidos_verificados(request):
         )
     )
     return JsonResponse(data, safe=False)
+
+
+@require_POST
+def marcar_pedido_despachado(request):
+    """
+    Cambia el estado de un pedido de 'Empacado x despachar' a 'Despachado'.
+    """
+    try:
+        data = json.loads(request.body)
+        pedido_id = data.get("pedido_id")
+
+        if not pedido_id:
+            return JsonResponse(
+                {"error": "Falta 'pedido_id' en el cuerpo de la petición"},
+                status=400,
+            )
+
+        pedido = get_object_or_404(Pedido, pk=pedido_id)
+
+        if pedido.estado != "Empacado x despachar":
+            return JsonResponse(
+                {
+                    "error": f"El pedido está en estado '{pedido.estado}', no se puede despachar"
+                },
+                status=400,
+            )
+
+        pedido.estado = "Despachado"
+        pedido.save()
+
+        return JsonResponse(
+            {
+                "pedido_id": pedido.id,
+                "estado": pedido.estado,
+                "mensaje": f"Pedido #{pedido.id} marcado como Despachado",
+            },
+            status=200,
+        )
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
