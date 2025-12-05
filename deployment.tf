@@ -301,7 +301,7 @@ resource "aws_instance" "pedidos_ms" {
                 git clone ${local.pedidos_repository} provesiapp-microservicios
               fi
 
-              cd provesiapp-microservicios/pedidos
+              cd provesiapp-microservicios/manejador_pedidos
 
               # (Opcional) ajustar Dockerfile del microservicio de pedidos
               # Se asume un placeholder <PEDIDOS_DB_HOST> en el Dockerfile
@@ -309,11 +309,25 @@ resource "aws_instance" "pedidos_ms" {
                 sudo sed -i "s/<PEDIDOS_DB_HOST>/${aws_instance.pedidos_db.private_ip}/g" Dockerfile
               fi
 
-              # Opcional: instalar dependencias/ejecutar migraciones si se quiere dejar listo
-              # sudo pip3 install --upgrade pip --break-system-packages
-              # sudo pip3 install -r requirements.txt --break-system-packages
-              # sudo python3 manage.py makemigrations
-              # sudo python3 manage.py migrate
+              # Instalar el módulo de venv para Python 3.12
+              sudo apt-get install -y python3.12-venv
+
+              # Crear el entorno virtual (.venv) en la carpeta actual
+              python3 -m venv .venv
+
+              # Activar el entorno virtual
+              source .venv/bin/activate
+
+              # Instalar dependencias del microservicio
+              pip install --upgrade pip
+              pip install -r requirements.txt
+
+              # Ejecutar migraciones
+              python manage.py makemigrations
+              python manage.py migrate
+
+              # Ejecutar el servidor Django en segundo plano
+              nohup python manage.py runserver 0.0.0.0:8080 > /var/log/pedidos_ms.log 2>&1 &
 
               EOT
 
