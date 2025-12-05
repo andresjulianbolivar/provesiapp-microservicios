@@ -33,8 +33,11 @@ export interface Pedido {
 export interface Cantidad {
   id: number;
   pedido: Pedido | number;
-  producto: Producto | number;
+  producto_id: number;
+  nombre_producto: string;
+  precio_unitario: number;
   unidades: number;
+  subtotal?: number;
 }
 
 export interface Factura {

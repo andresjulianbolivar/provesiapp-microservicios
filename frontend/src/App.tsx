@@ -6,6 +6,9 @@ import CotizacionesList from './pages/CotizacionesList';
 import CrearCotizacion from './pages/CrearCotizacion';
 import ConsultarStock from './pages/ConsultarStock';
 import InventariosList from './pages/InventariosList';
+import CrearPedido from './pages/CrearPedido';
+import CrearFactura from './pages/CrearFactura';
+import FacturasPendientes from './pages/FacturasPendientes';
 
 const App: React.FC = () => {
   return (
@@ -21,58 +24,10 @@ const App: React.FC = () => {
             <Route path="/consultar-stock" element={<ConsultarStock />} />
             <Route path="/inventarios" element={<InventariosList />} />
             
-            {/* Rutas para facturaciones - implementar después */}
-            <Route
-              path="/facturaciones/crear-pedido"
-              element={
-                <div className="container py-4">
-                  <div className="alert alert-info shadow-sm">
-                    <div className="d-flex align-items-center">
-                      <span className="fs-4 me-3">🚧</span>
-                      <div>
-                        <strong>En construcción:</strong>
-                        {' '}
-                        Página Crear Pedido próximamente disponible
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-            />
-            <Route
-              path="/facturaciones/crear-factura"
-              element={
-                <div className="container py-4">
-                  <div className="alert alert-info shadow-sm">
-                    <div className="d-flex align-items-center">
-                      <span className="fs-4 me-3">🚧</span>
-                      <div>
-                        <strong>En construcción:</strong>
-                        {' '}
-                        Página Crear Factura próximamente disponible
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-            />
-            <Route
-              path="/facturaciones/facturas-pendientes"
-              element={
-                <div className="container py-4">
-                  <div className="alert alert-info shadow-sm">
-                    <div className="d-flex align-items-center">
-                      <span className="fs-4 me-3">🚧</span>
-                      <div>
-                        <strong>En construcción:</strong>
-                        {' '}
-                        Página Facturas Pendientes próximamente disponible
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              }
-            />
+            {/* Rutas de facturaciones */}
+            <Route path="/facturaciones/crear-pedido" element={<CrearPedido />} />
+            <Route path="/facturaciones/crear-factura" element={<CrearFactura />} />
+            <Route path="/facturaciones/facturas-pendientes" element={<FacturasPendientes />} />
           </Routes>
         </div>
       </main>
