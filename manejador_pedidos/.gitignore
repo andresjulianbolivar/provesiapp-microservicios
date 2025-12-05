@@ -1,0 +1,54 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+.virtualenv/
+
+# Herramientas
+*.log
+*.pot
+*.pyc
+pip-wheel-metadata/
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# --- Django ---
+db.sqlite3
+media/
+staticfiles/
+static_root/
+*.sqlite3
+
+# Archivos de configuración locales
+.env
+.env.local
+*.sqlite3
+
+# --- IDEs / Editores ---
+.vscode/
+.idea/
+*.iml
+*.code-workspace
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+
+# --- Terraform ---
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl

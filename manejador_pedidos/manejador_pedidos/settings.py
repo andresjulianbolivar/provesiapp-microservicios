@@ -1,14 +1,15 @@
-# config/settings.py
+# manejador_pedidos/settings.py
 from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "cámbiame-esto-por-algo-seguro"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "API_EXAMPLE_KEY_FOR_DEV_ONLY")
 
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() == "true"
 
-ALLOWED_HOSTS: list[str] = ["*"]
+ALLOWED_HOSTS: list[str] = ["*"]  # luego lo puedes restringir
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -17,7 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "facturaciones",  # <- tu app
+    "pedidos",
 ]
 
 MIDDLEWARE = [
@@ -30,7 +31,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "config.urls"
+ROOT_URLCONF = "manejador_pedidos.urls"
 
 TEMPLATES = [
     {
@@ -48,13 +49,19 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "config.wsgi.application"
+WSGI_APPLICATION = "manejador_pedidos.wsgi.application"
+ASGI_APPLICATION = "manejador_pedidos.asgi.application"
 
-# BD: para MVP, SQLite va bien
+# ---------- BASE DE DATOS: PostgreSQL en la instancia pedidos_db ----------
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("PEDIDOS_DB_NAME", "pedidos_db"),
+        "USER": os.getenv("PEDIDOS_DB_USER", "pedidos_user"),
+        "PASSWORD": os.getenv("PEDIDOS_DB_PASSWORD", "isis2503"),
+        "HOST": os.getenv("PEDIDOS_DB_HOST", "localhost"),
+        "PORT": os.getenv("PEDIDOS_DB_PORT", "5432"),
     }
 }
 
