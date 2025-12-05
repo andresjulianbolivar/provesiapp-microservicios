@@ -1,33 +1,40 @@
 import json
-from django.http import JsonResponse, HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
 
-from facturaciones.logic.factura_logic import create_factura
-from facturaciones.logic.pedido_logic import create_pedido
-from facturaciones.models import Factura, Pedido
-from productos.models import Producto
-from provesiapp.auth0backend import getRole
+from ..logic.factura_logic import create_factura
+from ..logic.pedido_logic import create_pedido
+from ..models.factura import Factura, Pedido
 
 # Create your views here.
+@require_POST
 def generar_factura(request):
-    if request.method=="POST":
-        try:
-            data=json.loads(request.body)
-            productos_cantidades=data.get("productos_cantidades", [])
-            vip=data.get("vip", False)
-            factura=create_factura(productos_cantidades, vip)
-            return JsonResponse({
-                "factura_id": factura.id,
-                "total": factura.total,
-                "pedido_id": factura.pedido.id if factura.pedido else None
-            }, status=201)
-        except Exception as e:
-            return JsonResponse({
-                "error": str(e)
-            }, status=400)
-    return JsonResponse({"error": "Método no permitido"}, status=405)
+    try:
+        data = json.loads(request.body)
+        pedido_id = data.get("pedido_id")
 
-@login_required
+        if not pedido_id:
+            return JsonResponse(
+                {"error": "Falta 'pedido_id' en el cuerpo de la petición"},
+                status=400,
+            )
+
+        pedido = get_object_or_404(Pedido, pk=pedido_id)
+
+        factura = create_factura(pedido)
+
+        return JsonResponse(
+            {
+                "factura_id": factura.id,
+                "total": str(factura.rubro_total),  # Decimal -> str para JSON
+                "pedido_id": factura.pedido.id if factura.pedido else None,
+            },
+            status=201,
+        )
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
+
 def crear_pedido(request):
     role = getRole(request)
     if role != "Gerencia WMS":
