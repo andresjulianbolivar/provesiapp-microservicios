@@ -249,6 +249,9 @@ resource "aws_instance" "aduanas_ms" {
               # Guardar la IP privada de la base de datos de aduanas
               echo "ADUANAS_DB_HOST=${aws_instance.aduanas_db.private_ip}" | sudo tee -a /etc/environment
 
+              # URL base del microservicio de pedidos
+              echo "PEDIDOS_MS_BASE_URL=http://${aws_instance.pedidos_ms.private_ip}:8080" | sudo tee -a /etc/environment
+
               # (Opcional) Ajustar Dockerfile o configuración del servicio de aduanas/cotizaciones
               # Se asume un placeholder <ADUANAS_DB_HOST> en el Dockerfile del servicio
               if [ -f "./cotizaciones/Dockerfile" ]; then
@@ -263,7 +266,10 @@ resource "aws_instance" "aduanas_ms" {
     Role = "aduanas-ms"
   })
 
-  depends_on = [aws_instance.aduanas_db]
+  depends_on = [
+    aws_instance.aduanas_db,
+    aws_instance.pedidos_ms
+  ]
 }
 
 # ---------- INSTANCIA MICROSERVICIO PEDIDOS (Django, repo provesiapp-microservicios/pedidos) ----------
